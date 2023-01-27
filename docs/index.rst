@@ -1,0 +1,5 @@
+=========================
+collective.proximityindex
+=========================
+
+User documentation
