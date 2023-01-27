@@ -4,18 +4,19 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="collective.proximityindex">
 
-  <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
-  <include package="z3c.jbot" file="meta.zcml" />
-  <browser:jbot
-      directory="overrides"
-      layer="collective.proximityindex.interfaces.ICollectiveProximityindexLayer"
-      />
-
   <!-- Publish static files -->
   <plone:static
       name="collective.proximityindex"
       type="plone"
       directory="static"
+      />
+
+  <browser:page
+      for="zope.browser.interfaces.IAdding"
+      name="add-proximity-index"
+      template="add_proximity_index.pt"
+      class=".ProximityIndexAddView"
+      permission="cmf.ManagePortal"
       />
 
 </configure>

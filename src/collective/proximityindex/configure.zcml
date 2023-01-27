@@ -2,6 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:five="http://namespaces.zope.org/five"
     xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="collective.proximityindex">
 
@@ -41,5 +42,13 @@
       />
 
   <!-- -*- extra stuff goes here -*- -->
+
+  <five:registerClass
+      class=".index.ProximityIndex"
+      meta_type="ProximityIndex"
+      addview="add-proximity-index"
+      permission="cmf.ManagePortal"
+      global="False"
+      />
 
 </configure>
