@@ -92,7 +92,13 @@ class ProximityIndex(UnIndex):
         pass
 
     def __len__(self):
-        return 0
+        # Borrowed from:
+        # https://github.com/plone/plone.folder/blob/master/src/plone/folder/nogopip.py
+        #
+        # with python 2.4 returning `sys.maxint` gives:
+        # OverflowError: __len__() should return 0 <= outcome < 2**31
+        # so...
+        return 2**31 - 1
 
     def _convert(self, value, default=None):
         # convert from degrees to radians because TODO why?
