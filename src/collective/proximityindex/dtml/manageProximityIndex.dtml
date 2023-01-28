@@ -3,8 +3,6 @@
 
 <p class="form-help">
 Objects indexed: <dtml-var numObjects>
-<br>
-Distinct values: <dtml-var indexSize>
 </p>
 
 
