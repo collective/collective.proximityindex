@@ -5,7 +5,7 @@ class ProximityIndexAddView:
     def __call__(self, id='', submit_add=''):
 
         if submit_add and id:
-            obj = ProximityIndex(id, extra={"indexed_attrs": "getGeolocation"})
+            obj = ProximityIndex(id, extra={"indexed_attrs": "geolocation"})
             zcatalog = self.context.context
             zcatalog.addIndex(id, obj)
 
