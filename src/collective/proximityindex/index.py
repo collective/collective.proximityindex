@@ -10,7 +10,6 @@ import math
 from App.special_dtml import DTMLFile
 from Products.PluginIndexes.interfaces import ISortIndex
 from Products.PluginIndexes.common.UnIndex import UnIndex
-from Products.PluginIndexes.common.util import parseIndexRequest
 from zope.interface import implementer
 from ZODB.POSException import ConflictError
 from zope.globalrequest import getRequest
@@ -77,11 +76,11 @@ _marker = object()
 class ProximityIndex(UnIndex):
     """Index for sorting by geographic proximity"""
 
-    meta_type = 'ProximityIndex'
-    manage_options = (dict(label='Settings', action='manage_main'),)
-    manage = manage_main = DTMLFile('dtml/manageProximityIndex', globals())
-    manage_main._setName('manage_main')
-    query_options = ("query",)
+    meta_type = "ProximityIndex"
+    manage_options = (dict(label="Settings", action="manage_main"),)
+    manage = manage_main = DTMLFile("dtml/manageProximityIndex", globals())
+    manage_main._setName("manage_main")
+    query_options = ("center",)
 
     def insertForwardIndexEntry(self, entry, documentId):
         # don't use the forward index
@@ -107,20 +106,7 @@ class ProximityIndex(UnIndex):
         except AttributeError:
             return _marker
 
-    def _apply_index(self, request, resultset=None):
-        # get the center point from the query and stash it in the request
-        zope_request = getRequest()
-        record = parseIndexRequest(request, self.id, self.query_options)
-
-        if record.keys:
-            zope_request._proximity_value = record.keys
-        elif hasattr(zope_request, '_proximity_value'):
-            del zope_request._proximity_value
-
-        # don't filter results
-        return None
-
-    def _index_object(self, documentId, obj, threshold=None, attr=''):
+    def _index_object(self, documentId, obj, threshold=None, attr=""):
         """index and object 'obj' with integer id 'documentId'"""
         returnStatus = 0
 
@@ -159,13 +145,13 @@ class ProximityIndex(UnIndex):
     def documentToKeyMap(self):
         # get mapping from doc id to calculated proximity
         zope_request = getRequest()
-        if not hasattr(zope_request, '_proximity_value'):
+        if not hasattr(zope_request, "_proximity_center"):
             raise ValueError(
                 "Can't sort by {} unless a center point is provided in the query.".format(
                     self.id
                 )
             )
-        center = zope_request._proximity_value
+        center = zope_request._proximity_center
         center_as_radians = (math.radians(center[0]), math.radians(center[1]))
         return DistanceKeyMap(center_as_radians, self._unindex)
 
@@ -182,11 +168,10 @@ class DistanceKeyMap:
 
     def __getitem__(self, doc):
         dist = distanceOfRadiansInKM(self.center, self.unindex[doc])
-        logger.info("Distance in DistanceKeyMap: {}".format(dist))
         return dist
 
 
-manage_addProximityIndexForm = DTMLFile('dtml/addProximityIndex', globals())
+manage_addProximityIndexForm = DTMLFile("dtml/addProximityIndex", globals())
 
 
 def manage_addProximityIndex(
@@ -195,7 +180,7 @@ def manage_addProximityIndex(
     """add a geo proximity index"""
     return self.manage_addIndex(
         identifier,
-        'ProximityIndex',
+        "ProximityIndex",
         extra=extra,
         REQUEST=REQUEST,
         RESPONSE=RESPONSE,
